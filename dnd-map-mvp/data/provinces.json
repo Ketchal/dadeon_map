@@ -1,0 +1,50 @@
+[
+  {
+    "id": "state1",
+    "name": "Северный предел",
+    "kingdomId": "kingdom-dedeon",
+    "capital": false,
+    "description": "Пограничная провинция, удерживающая северный торговый тракт.",
+    "visibility": "player"
+  },
+  {
+    "id": "state2",
+    "name": "Долина Астер",
+    "kingdomId": "kingdom-dedeon",
+    "capital": true,
+    "description": "Сердце королевства и главный политический узел региона.",
+    "visibility": "player"
+  },
+  {
+    "id": "state3",
+    "name": "Серые берега",
+    "kingdomId": "kingdom-varast",
+    "capital": false,
+    "description": "Холодное побережье с напряжённой морской торговлей.",
+    "visibility": "player"
+  },
+  {
+    "id": "state4",
+    "name": "Чёрный кряж",
+    "kingdomId": "kingdom-varast",
+    "capital": false,
+    "description": "Горная область с крепостями и шахтами.",
+    "visibility": "player"
+  },
+  {
+    "id": "state5",
+    "name": "Запретная котловина",
+    "kingdomId": "kingdom-secret-order",
+    "capital": false,
+    "description": "Скрытая территория, о которой игроки пока не знают.",
+    "visibility": "master"
+  },
+  {
+    "id": "state6",
+    "name": "Южные луга",
+    "kingdomId": "kingdom-dedeon",
+    "capital": false,
+    "description": "Плодородные земли, снабжающие столицу зерном.",
+    "visibility": "player"
+  }
+]

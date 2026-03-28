@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>D&D Map Editor MVP</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <h1>D&D Map Editor</h1>
+        <p class="subtitle">MVP: мастерская и версия игрока на одной базе данных</p>
+      </div>
+      <div class="topbar-actions">
+        <label class="mode-switch">
+          <span>Режим</span>
+          <select id="mode-select">
+            <option value="master">Мастер</option>
+            <option value="player">Игрок</option>
+          </select>
+        </label>
+        <button id="export-button">Экспорт JSON</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="map-panel">
+        <div class="map-toolbar">
+          <div class="toolbar-group">
+            <button id="add-character-button">Добавить персонажа</button>
+            <button id="add-marker-button">Добавить маркер</button>
+          </div>
+          <div class="toolbar-group">
+            <button id="zoom-out-button" type="button">−</button>
+            <button id="zoom-reset-button" type="button">100%</button>
+            <button id="zoom-in-button" type="button">+</button>
+            <span id="zoom-value" class="badge zoom-badge">100%</span>
+          </div>
+          <span id="toolbar-hint">Выберите провинцию на карте.</span>
+        </div>
+        <div id="map-container" class="map-container"></div>
+      </section>
+
+      <aside class="sidebar">
+        <section class="panel">
+          <h2>Выбор</h2>
+          <div id="selection-panel" class="panel-body">
+            <p>Ничего не выбрано.</p>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Королевства</h2>
+          <div class="panel-body">
+            <div id="kingdom-list" class="stack"></div>
+            <hr />
+            <form id="kingdom-form" class="stack compact-form">
+              <input id="kingdom-name" type="text" placeholder="Название королевства" required />
+              <input id="kingdom-ruler" type="text" placeholder="Правитель" />
+              <input id="kingdom-color" type="color" value="#7a3cff" />
+              <select id="kingdom-visibility">
+                <option value="player">Видно игрокам</option>
+                <option value="master">Только мастеру</option>
+              </select>
+              <button type="submit">Создать королевство</button>
+            </form>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Слой объектов</h2>
+          <div class="panel-body">
+            <label><input type="checkbox" id="toggle-characters" checked /> Персонажи</label>
+            <label><input type="checkbox" id="toggle-markers" checked /> Маркеры</label>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

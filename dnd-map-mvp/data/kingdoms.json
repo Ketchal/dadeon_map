@@ -1,0 +1,23 @@
+[
+  {
+    "id": "kingdom-dedeon",
+    "name": "Дедеон",
+    "ruler": "Король Арден",
+    "color": "#b84a4a",
+    "visibility": "player"
+  },
+  {
+    "id": "kingdom-varast",
+    "name": "Вараст",
+    "ruler": "Совет Пяти",
+    "color": "#5b7ecf",
+    "visibility": "player"
+  },
+  {
+    "id": "kingdom-secret-order",
+    "name": "Тайный Орден",
+    "ruler": "Неизвестен",
+    "color": "#6f4f94",
+    "visibility": "master"
+  }
+]

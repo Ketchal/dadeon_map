@@ -1,0 +1,32 @@
+[
+  {
+    "id": "char-edrik",
+    "name": "Эдрик",
+    "provinceId": "state2",
+    "x": 520,
+    "y": 360,
+    "status": "В столице",
+    "summary": "Наёмник, следит за передвижениями двора.",
+    "visibility": "player"
+  },
+  {
+    "id": "char-nera",
+    "name": "Нера",
+    "provinceId": "state4",
+    "x": 690,
+    "y": 238,
+    "status": "В дороге",
+    "summary": "Посланница Совета Пяти.",
+    "visibility": "player"
+  },
+  {
+    "id": "char-watcher",
+    "name": "Наблюдатель",
+    "provinceId": "state5",
+    "x": 1130,
+    "y": 372,
+    "status": "Скрывается",
+    "summary": "Секретный агент, известный только мастеру.",
+    "visibility": "master"
+  }
+]

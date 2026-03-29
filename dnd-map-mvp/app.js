@@ -9,7 +9,7 @@ const state = {
   zoom: {
     baseViewBox: null,
     current: 1,
-    min: 0.5,
+    min: 1,
     max: 4,
     step: 1.2,
   },

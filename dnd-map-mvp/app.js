@@ -3,6 +3,7 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 const state = {
   mode: "master",
   selection: null,
+  hoveredProvinceId: null,
   tool: null,
   svg: null,
   svgRoot: null,
@@ -161,31 +162,6 @@ function getProvinceElement(provinceId) {
   return state.svgRoot.getElementById(provinceId) || state.svgRoot.querySelector(`#${provinceId}`);
 }
 
-function getProvinceGapElement(provinceId) {
-  const gapId = provinceId.replace(/^state/, "state-gap");
-  return state.svgRoot.getElementById(gapId) || state.svgRoot.querySelector(`#${gapId}`);
-}
-function setProvinceVisualStyle(element, options) {
-  element.style.vectorEffect = "non-scaling-stroke";
-  element.style.strokeLinejoin = "round";
-  element.style.strokeLinecap = "round";
-  element.style.paintOrder = "stroke fill";
-  element.classList.toggle("is-hidden-for-player", options.isHiddenForPlayer);
-
-  if (options.kind === "fill") {
-    element.setAttribute("fill", options.fill);
-    element.setAttribute("fill-opacity", options.fillOpacity);
-    element.style.stroke = options.stroke;
-    element.style.strokeWidth = options.strokeWidth;
-    return;
-  }
-
-  element.setAttribute("fill", "none");
-  element.setAttribute("stroke", options.stroke);
-  element.setAttribute("stroke-opacity", options.strokeOpacity);
-  element.setAttribute("stroke-width", options.strokeWidth);
-}
-
 
 function getEntityBySelection(selection) {
   if (!selection) return null;
@@ -322,15 +298,13 @@ function setupProvinceInteractions() {
     element.dataset.entityId = province.id;
 
     element.addEventListener("mouseenter", () => {
-      if (state.selection?.type !== "province" || state.selection.id !== province.id) {
-        element.style.filter = "brightness(1.12)";
-      }
+      state.hoveredProvinceId = province.id;
+      applyProvinceStyles();
     });
 
     element.addEventListener("mouseleave", () => {
-      if (state.selection?.type !== "province" || state.selection.id !== province.id) {
-        element.style.filter = "";
-      }
+      state.hoveredProvinceId = null;
+      applyProvinceStyles();
     });
 
     element.addEventListener("click", (event) => {
@@ -363,34 +337,33 @@ function setupProvinceInteractions() {
 }
 
 function applyProvinceStyles() {
+  const layer = ensureOverlayLayer("province-fill-overlay");
+
   state.data.provinces.forEach((province) => {
-    const element = getProvinceElement(province.id);
-    if (!element) return;
+    if (!isVisible(province)) return;
+
+    const sourceElement = getProvinceElement(province.id);
+    if (!sourceElement) return;
 
     const kingdom = getKingdomById(province.kingdomId);
     const baseColor = kingdom?.color ?? "#666666";
     const isSelected = state.selection?.type === "province" && state.selection.id === province.id;
-    const isHiddenForPlayer = state.mode === "player" && province.visibility === "master";
+    const isHovered = state.hoveredProvinceId === province.id;
 
-    setProvinceVisualStyle(element, {
-      kind: "fill",
-      fill: baseColor,
-      fillOpacity: isVisible(province) ? "0.5" : "0.14",
-      stroke: isSelected ? "#fff3d2" : "rgba(0,0,0,.25)",
-      strokeWidth: isSelected ? "2.5px" : "1px",
-      isHiddenForPlayer,
-    });
+    const overlayProvince = sourceElement.cloneNode(true);
+    overlayProvince.querySelectorAll?.("[id]").forEach((node) => node.removeAttribute("id"));
+    overlayProvince.removeAttribute("id");
+    overlayProvince.style.pointerEvents = "none";
+    overlayProvince.style.vectorEffect = "non-scaling-stroke";
+    overlayProvince.style.strokeLinejoin = "round";
+    overlayProvince.style.strokeLinecap = "round";
+    overlayProvince.style.paintOrder = "stroke fill";
+    overlayProvince.setAttribute("fill", baseColor);
+    overlayProvince.setAttribute("fill-opacity", isHovered ? "0.62" : "0.5");
+    overlayProvince.setAttribute("stroke", isSelected ? "#fff3d2" : "rgba(0,0,0,.25)");
+    overlayProvince.setAttribute("stroke-width", isSelected ? "2.5px" : "1px");
 
-    const gapElement = getProvinceGapElement(province.id);
-    if (gapElement) {
-      setProvinceVisualStyle(gapElement, {
-        kind: "gap",
-        stroke: baseColor,
-        strokeOpacity: isVisible(province) ? "0.75" : "0.2",
-        strokeWidth: isSelected ? "3px" : "2px",
-        isHiddenForPlayer,
-      });
-    }
+    layer.appendChild(overlayProvince);
   });
 }
 
@@ -401,6 +374,7 @@ function ensureOverlayLayer(id) {
     layer.setAttribute("id", id);
     state.svgRoot.appendChild(layer);
   }
+  layer.style.pointerEvents = id === "province-fill-overlay" ? "none" : "all";
   layer.innerHTML = "";
   return layer;
 }

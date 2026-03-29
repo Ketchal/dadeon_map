@@ -14,11 +14,13 @@ const state = {
     step: 1.2,
   },
   interaction: {
-    isDragging: false,
-    draggedType: null,
-    draggedId: null,
-    movedDuringDrag: false,
-  },
+  isDragging: false,
+  draggedType: null,
+  draggedId: null,
+  movedDuringDrag: false,
+  pointerId: null,
+  dragStartedAt: null,
+},
   layers: {
     characters: true,
     markers: true,
@@ -163,6 +165,27 @@ function getProvinceGapElement(provinceId) {
   const gapId = provinceId.replace(/^state/, "state-gap");
   return state.svgRoot.getElementById(gapId) || state.svgRoot.querySelector(`#${gapId}`);
 }
+function setProvinceVisualStyle(element, options) {
+  element.style.vectorEffect = "non-scaling-stroke";
+  element.style.strokeLinejoin = "round";
+  element.style.strokeLinecap = "round";
+  element.style.paintOrder = "stroke fill";
+  element.classList.toggle("is-hidden-for-player", options.isHiddenForPlayer);
+
+  if (options.kind === "fill") {
+    element.setAttribute("fill", options.fill);
+    element.setAttribute("fill-opacity", options.fillOpacity);
+    element.style.stroke = options.stroke;
+    element.style.strokeWidth = options.strokeWidth;
+    return;
+  }
+
+  element.setAttribute("fill", "none");
+  element.setAttribute("stroke", options.stroke);
+  element.setAttribute("stroke-opacity", options.strokeOpacity);
+  element.setAttribute("stroke-width", options.strokeWidth);
+}
+
 
 function getEntityBySelection(selection) {
   if (!selection) return null;
@@ -208,18 +231,38 @@ function getProvinceIdByCoordinates(x, y) {
 
 function beginEntityDrag(type, id, event) {
   if (state.mode !== "master") return;
+
   state.interaction.isDragging = true;
   state.interaction.draggedType = type;
   state.interaction.draggedId = id;
   state.interaction.movedDuringDrag = false;
+  state.interaction.pointerId = event.pointerId ?? null;
+  state.interaction.dragStartedAt = { x: event.clientX, y: event.clientY };
+
+  refs.mapContainer.classList.add("is-dragging-map-object");
+
+  event.currentTarget?.setPointerCapture?.(event.pointerId);
+  event.preventDefault();
   event.stopPropagation();
 }
 
 function handlePointerMove(event) {
   if (!state.interaction.isDragging || !state.interaction.draggedType || !state.interaction.draggedId) return;
+  if (state.interaction.pointerId !== null && event.pointerId !== state.interaction.pointerId) return;
 
   const { x, y } = toSvgPoint(event);
-  state.interaction.movedDuringDrag = true;
+
+  const dragDistance = state.interaction.dragStartedAt
+    ? Math.hypot(
+        event.clientX - state.interaction.dragStartedAt.x,
+        event.clientY - state.interaction.dragStartedAt.y,
+      )
+    : 0;
+
+  if (dragDistance > 3) {
+    state.interaction.movedDuringDrag = true;
+  }
+
   updateEntityPosition(state.interaction.draggedType, state.interaction.draggedId, x, y);
 
   if (state.interaction.draggedType === "character") {
@@ -228,16 +271,26 @@ function handlePointerMove(event) {
     renderMarkers();
   }
 
-  if (state.selection?.type === state.interaction.draggedType && state.selection.id === state.interaction.draggedId) {
+  if (
+    state.selection?.type === state.interaction.draggedType &&
+    state.selection.id === state.interaction.draggedId
+  ) {
     renderSelectionPanel();
   }
 }
 
-function endEntityDrag() {
+function endEntityDrag(event = null) {
   if (!state.interaction.isDragging) return;
+  if (event && state.interaction.pointerId !== null && event.pointerId !== state.interaction.pointerId) return;
+
   state.interaction.isDragging = false;
   state.interaction.draggedType = null;
   state.interaction.draggedId = null;
+  state.interaction.pointerId = null;
+  state.interaction.dragStartedAt = null;
+
+  refs.mapContainer.classList.remove("is-dragging-map-object");
+
   requestAnimationFrame(() => {
     state.interaction.movedDuringDrag = false;
   });
@@ -286,11 +339,12 @@ function setupProvinceInteractions() {
     });
   });
 
-  state.svgRoot.addEventListener("click", handleMapClick);
   refs.mapContainer.addEventListener(
     "wheel",
     (event) => {
       event.preventDefault();
+      if (state.interaction.isDragging) return;
+
       const focusPoint = toSvgPoint(event);
       if (event.deltaY < 0) {
         zoomIn(focusPoint);
@@ -303,6 +357,9 @@ function setupProvinceInteractions() {
 
   refs.mapContainer.addEventListener("pointermove", handlePointerMove);
   window.addEventListener("pointerup", endEntityDrag);
+  window.addEventListener("pointercancel", endEntityDrag);
+
+  
 }
 
 function applyProvinceStyles() {
@@ -310,21 +367,29 @@ function applyProvinceStyles() {
     const element = getProvinceElement(province.id);
     if (!element) return;
 
-    const gapElement = getProvinceGapElement(province.id);
     const kingdom = getKingdomById(province.kingdomId);
     const baseColor = kingdom?.color ?? "#666666";
     const isSelected = state.selection?.type === "province" && state.selection.id === province.id;
-    element.setAttribute("fill", baseColor);
-    element.setAttribute("fill-opacity", isVisible(province) ? "0.5" : "0.14");
-    element.style.stroke = isSelected ? "#fff3d2" : "rgba(0,0,0,.25)";
-    element.style.strokeWidth = isSelected ? "3" : "1";
-    element.classList.toggle("is-hidden-for-player", state.mode === "player" && province.visibility === "master");
+    const isHiddenForPlayer = state.mode === "player" && province.visibility === "master";
 
+    setProvinceVisualStyle(element, {
+      kind: "fill",
+      fill: baseColor,
+      fillOpacity: isVisible(province) ? "0.5" : "0.14",
+      stroke: isSelected ? "#fff3d2" : "rgba(0,0,0,.25)",
+      strokeWidth: isSelected ? "2.5px" : "1px",
+      isHiddenForPlayer,
+    });
+
+    const gapElement = getProvinceGapElement(province.id);
     if (gapElement) {
-      gapElement.setAttribute("stroke", baseColor);
-      gapElement.setAttribute("stroke-opacity", isVisible(province) ? "0.75" : "0.2");
-      gapElement.setAttribute("stroke-width", isSelected ? "4" : "3");
-      gapElement.classList.toggle("is-hidden-for-player", state.mode === "player" && province.visibility === "master");
+      setProvinceVisualStyle(gapElement, {
+        kind: "gap",
+        stroke: baseColor,
+        strokeOpacity: isVisible(province) ? "0.75" : "0.2",
+        strokeWidth: isSelected ? "3px" : "2px",
+        isHiddenForPlayer,
+      });
     }
   });
 }
@@ -352,7 +417,7 @@ function renderCharacters() {
     circle.setAttribute("cy", String(character.y));
     circle.setAttribute("r", "7");
     circle.setAttribute("fill", state.selection?.type === "character" && state.selection.id === character.id ? "#ffe9a6" : "#f1f1f1");
-    circle.setAttribute("class", "map-character");
+    circle.style.cursor = state.mode === "master" ? "grab" : "pointer";
     circle.dataset.entityType = "character";
     circle.dataset.entityId = character.id;
     circle.addEventListener("pointerdown", (event) => {
@@ -390,6 +455,7 @@ function renderMarkers() {
 
     const group = document.createElementNS(SVG_NS, "g");
     group.dataset.entityType = "marker";
+    group.style.cursor = state.mode === "master" ? "grab" : "pointer";
     group.dataset.entityId = marker.id;
     group.addEventListener("pointerdown", (event) => {
       beginEntityDrag("marker", marker.id, event);

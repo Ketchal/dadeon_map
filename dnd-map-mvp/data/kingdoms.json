@@ -1,23 +1,93 @@
 [
   {
-    "id": "kingdom-dedeon",
-    "name": "Дедеон",
-    "ruler": "Король Арден",
-    "color": "#b84a4a",
+    "id": "mazonian-empire",
+    "name": "Мазонская империя",
+    "ruler": "Император",
+    "color": "#7b3f95",
     "visibility": "player"
   },
   {
-    "id": "kingdom-varast",
-    "name": "Вараст",
-    "ruler": "Совет Пяти",
-    "color": "#5b7ecf",
+    "id": "northern-horde",
+    "name": "Северная Орда",
+    "ruler": "Совет Вождей",
+    "color": "#B8860B",
     "visibility": "player"
   },
   {
-    "id": "kingdom-secret-order",
-    "name": "Тайный Орден",
-    "ruler": "Неизвестен",
-    "color": "#6f4f94",
-    "visibility": "master"
+    "id": "dominion-of-eatein",
+    "name": "Доминион Эатейн",
+    "ruler": "--",
+    "color": "#A0522D",
+    "visibility": "player"
+  },
+  {
+    "id": "marginal-forest",
+    "name": "Краелесье",
+    "ruler": "--",
+    "color": "#008000",
+    "visibility": "player"
+  },
+  {
+    "id": "khukbadus-clans",
+    "name": "Кхукбадусские кланы",
+    "ruler": "--",
+    "color": "#2E8B57",
+    "visibility": "player"
+  },
+  {
+    "id": "dragon-empire",
+    "name": "Империя драконов",
+    "ruler": "--",
+    "color": "#AFEEEE",
+    "visibility": "player"
+  },
+  {
+    "id": "сhun-chidai",
+    "name": "Чунь Шидай",
+    "ruler": "--",
+    "color": "#BA55D3",
+    "visibility": "player"
+  },
+  {
+    "id": "endless-jianghu",
+    "name": "Бескрайний Дзянху",
+    "ruler": "--",
+    "color": "#FF00FF",
+    "visibility": "player"
+  },
+  {
+    "id": "shaelin",
+    "name": "Шаэлин",
+    "ruler": "--",
+    "color": "#00FFFF",
+    "visibility": "player"
+  },
+  {
+    "id": "earth-mortis",
+    "name": "Земли Мортис",
+    "ruler": "--",
+    "color": "#00FF00",
+    "visibility": "player"
+  },
+  {
+    "id": "deya",
+    "name": "Дейя",
+    "ruler": "--",
+    "color": "#7FFFD4",
+    "visibility": "player"
+  },
+  {
+    "id": "southern-horde",
+    "name": "Южная Орда",
+    "ruler": "--",
+    "color": "#DEB887",
+    "visibility": "player"
+  },
+  {
+    "id": "kingdom-of-agatha",
+    "name": "Королевство Агата",
+    "ruler": "--",
+    "color": "#1E90FF",
+    "visibility": "player"
   }
 ]

@@ -1,0 +1,33 @@
+.scale-bar {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  z-index: 20;
+  pointer-events: none;
+  color: #f3f1ea;
+  font-size: 12px;
+  user-select: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+.scale-bar-line {
+  width: 120px;
+  height: 10px;
+  border-left: 2px solid rgba(243, 241, 234, 0.95);
+  border-right: 2px solid rgba(243, 241, 234, 0.95);
+  border-bottom: 2px solid rgba(243, 241, 234, 0.95);
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.scale-bar-label {
+  margin-top: 4px;
+  text-align: center;
+}
+.map-panel {
+  position: relative;
+}
+.active-tool {
+  outline: 2px solid rgba(243, 241, 234, 0.9);
+  outline-offset: 1px;
+}

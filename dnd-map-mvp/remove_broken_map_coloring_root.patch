@@ -1,0 +1,54 @@
+git apply --check remove_broken_map_coloring_root.patch
+git apply remove_broken_map_coloring_root.patch
+git diff -- app.js
+upProvinceInteractions() {
+ }
+ 
+ function applyProvinceStyles() {
+-  const layer = ensureOverlayLayer("province-fill-overlay");
++  const brokenOverlayLayer = state.svgRoot.querySelector("#province-fill-overlay");
++  if (brokenOverlayLayer) {
++    brokenOverlayLayer.remove();
++  }
+ 
+   state.data.provinces.forEach((province) => {
+-    if (!isVisible(province)) return;
+-
+-    const sourceElement = getProvinceElement(province.id);
+-    if (!sourceElement) return;
+-
+-    const kingdom = getKingdomById(province.kingdomId);
+-    const baseColor = kingdom?.color ?? "#666666";
++    const element = getProvinceElement(province.id);
++    if (!element) return;
++
+     const isSelected = state.selection?.type === "province" && state.selection.id === province.id;
+     const isHovered = state.hoveredProvinceId === province.id;
+-
+-    const overlayProvince = sourceElement.cloneNode(true);
+-    overlayProvince.querySelectorAll?.("[id]").forEach((node) => node.removeAttribute("id"));
+-    overlayProvince.removeAttribute("id");
+-    overlayProvince.style.pointerEvents = "none";
+-    overlayProvince.style.vectorEffect = "non-scaling-stroke";
+-    overlayProvince.style.strokeLinejoin = "round";
+-    overlayProvince.style.strokeLinecap = "round";
+-    overlayProvince.style.paintOrder = "stroke fill";
+-    overlayProvince.setAttribute("fill", baseColor);
+-    overlayProvince.setAttribute("fill-opacity", isHovered ? "0.62" : "0.5");
+-    overlayProvince.setAttribute("stroke", isSelected ? "#fff3d2" : "rgba(0,0,0,.25)");
+-    overlayProvince.setAttribute("stroke-width", isSelected ? "2.5px" : "1px");
+-
+-    layer.appendChild(overlayProvince);
++    const isHiddenForPlayer = state.mode === "player" && province.visibility === "master";
++
++    element.classList.toggle("is-hidden-for-player", isHiddenForPlayer);
++
++    if (isSelected) {
++      element.style.filter = "brightness(1.16)";
++    } else if (isHovered) {
++      element.style.filter = "brightness(1.08)";
++    } else {
++      element.style.filter = "";
++    }
+   });
+ }

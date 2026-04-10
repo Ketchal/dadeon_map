@@ -1,0 +1,263 @@
+[
+  {
+    "id": "settlement1",
+    "name": "Тронвуд",
+    "type": "capital",
+    "x": 810,
+    "y": 212,
+    "provinceId": "reg13",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement2",
+    "name": "Верул",
+    "type": "village",
+    "x": 796,
+    "y": 198,
+    "provinceId": "reg12",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement3",
+    "name": "Галм",
+    "type": "city",
+    "x": 821,
+    "y": 187,
+    "provinceId": "reg10",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement4",
+    "name": "Стирлон",
+    "type": "city",
+    "x": 778,
+    "y": 209,
+    "provinceId": "reg11",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement5",
+    "name": "Гнок",
+    "type": "city",
+    "x": 879,
+    "y": 209,
+    "provinceId": "reg17",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement6",
+    "name": "Энгер",
+    "type": "village",
+    "x": 888,
+    "y": 217,
+    "provinceId": "reg17",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement7",
+    "name": "Белое Перо",
+    "type": "capital",
+    "x": 1028,
+    "y": 396,
+    "provinceId": "reg82",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement8",
+    "name": "Мерелинай",
+    "type": "capital",
+    "x": 1197,
+    "y": 259,
+    "provinceId": "reg26",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement9",
+    "name": "Лоян",
+    "type": "capital",
+    "x": 454,
+    "y": 468,
+    "provinceId": "reg44",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement10",
+    "name": "Инулинай",
+    "type": "capital",
+    "x": 812,
+    "y": 412,
+    "provinceId": "reg54",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement11",
+    "name": "Порт Аркадия",
+    "type": "city",
+    "x": 848,
+    "y": 104,
+    "provinceId": "reg8",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement12",
+    "name": "Хобстон",
+    "type": "city",
+    "x": 755,
+    "y": 110,
+    "provinceId": "reg9",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement13",
+    "name": "Савахарди",
+    "type": "city",
+    "x": 746,
+    "y": 114,
+    "provinceId": "reg9",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement14",
+    "name": "Меринд",
+    "type": "city",
+    "x": 915,
+    "y": 279,
+    "provinceId": "reg20",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement15",
+    "name": "Скалли",
+    "type": "city",
+    "x": 947,
+    "y": 286,
+    "provinceId": "reg20",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement16",
+    "name": "Килатия",
+    "type": "village",
+    "x": 938,
+    "y": 302,
+    "provinceId": "reg20",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement17",
+    "name": "Исердайн",
+    "type": "city",
+    "x": 904,
+    "y": 207,
+    "provinceId": "reg17",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement18",
+    "name": "Гангир",
+    "type": "city",
+    "x": 905,
+    "y": 227,
+    "provinceId": "reg17",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement19",
+    "name": "Зертон",
+    "type": "city",
+    "x": 921,
+    "y": 224,
+    "provinceId": "reg17",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement20",
+    "name": "Щурдев",
+    "type": "city",
+    "x": 936,
+    "y": 221,
+    "provinceId": "reg17",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement21",
+    "name": "Северная кровь",
+    "type": "fort",
+    "x": 923,
+    "y": 186,
+    "provinceId": "reg17",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement22",
+    "name": "Финг",
+    "type": "city",
+    "x": 935,
+    "y": 209,
+    "provinceId": "reg17",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement23",
+    "name": "Эритрин",
+    "type": "city",
+    "x": 958,
+    "y": 223,
+    "provinceId": "reg17",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement24",
+    "name": "Кархероу",
+    "type": "city",
+    "x": 927,
+    "y": 235,
+    "provinceId": "reg17",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement25",
+    "name": "Лоухил",
+    "type": "city",
+    "x": 970,
+    "y": 236,
+    "provinceId": "reg17",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement26",
+    "name": "Кушар",
+    "type": "city",
+    "x": 988,
+    "y": 246,
+    "provinceId": "reg17",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement27",
+    "name": "Хангедог",
+    "type": "city",
+    "x": 1004,
+    "y": 252,
+    "provinceId": "reg84",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement28",
+    "name": "Дулфорд",
+    "type": "city",
+    "x": 1046,
+    "y": 251,
+    "provinceId": "reg84",
+    "visibility": "player"
+  },
+  {
+    "id": "settlement29",
+    "name": "Дорхуд",
+    "type": "city",
+    "x": 988,
+    "y": 285,
+    "provinceId": "reg84",
+    "visibility": "player"
+  }
+]

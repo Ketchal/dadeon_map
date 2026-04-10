@@ -1,50 +1,722 @@
 [
   {
-    "id": "state1",
-    "name": "Северный предел",
-    "kingdomId": "kingdom-dedeon",
+    "id": "reg1",
+    "name": "Регион 1",
+    "kingdomId": "mazonian-empire",
     "capital": false,
-    "description": "Пограничная провинция, удерживающая северный торговый тракт.",
+    "description": "",
     "visibility": "player"
   },
   {
-    "id": "state2",
-    "name": "Долина Астер",
-    "kingdomId": "kingdom-dedeon",
-    "capital": true,
-    "description": "Сердце королевства и главный политический узел региона.",
+    "id": "reg2",
+    "name": "Регион 2",
+    "kingdomId": "mazonian-empire",
+    "capital": false,
+    "description": "",
     "visibility": "player"
   },
   {
-    "id": "state3",
-    "name": "Серые берега",
-    "kingdomId": "kingdom-varast",
+    "id": "reg3",
+    "name": "Регион 3",
+    "kingdomId": "mazonian-empire",
     "capital": false,
-    "description": "Холодное побережье с напряжённой морской торговлей.",
+    "description": "",
     "visibility": "player"
   },
   {
-    "id": "state4",
-    "name": "Чёрный кряж",
-    "kingdomId": "kingdom-varast",
+    "id": "reg4",
+    "name": "Регион 4",
+    "kingdomId": "mazonian-empire",
     "capital": false,
-    "description": "Горная область с крепостями и шахтами.",
+    "description": "",
     "visibility": "player"
   },
   {
-    "id": "state5",
-    "name": "Запретная котловина",
-    "kingdomId": "kingdom-secret-order",
+    "id": "reg5",
+    "name": "Регион 5",
+    "kingdomId": "mazonian-empire",
     "capital": false,
-    "description": "Скрытая территория, о которой игроки пока не знают.",
-    "visibility": "master"
+    "description": "",
+    "visibility": "player"
   },
   {
-    "id": "state6",
-    "name": "Южные луга",
-    "kingdomId": "kingdom-dedeon",
+    "id": "reg6",
+    "name": "Регион 6",
+    "kingdomId": "mazonian-empire",
     "capital": false,
-    "description": "Плодородные земли, снабжающие столицу зерном.",
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg7",
+    "name": "Регион 7",
+    "kingdomId": "mazonian-empire",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg8",
+    "name": "Регион 8",
+    "kingdomId": "mazonian-empire",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg9",
+    "name": "Регион 9",
+    "kingdomId": "mazonian-empire",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg10",
+    "name": "Регион 10",
+    "kingdomId": "mazonian-empire",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg11",
+    "name": "Регион 11",
+    "kingdomId": "mazonian-empire",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg12",
+    "name": "Регион 12",
+    "kingdomId": "mazonian-empire",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg13",
+    "name": "Регион 13",
+    "kingdomId": "mazonian-empire",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg14",
+    "name": "Регион 14",
+    "kingdomId": "mazonian-empire",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg15",
+    "name": "Регион 15",
+    "kingdomId": "mazonian-empire",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg16",
+    "name": "Регион 16",
+    "kingdomId": "mazonian-empire",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg17",
+    "name": "Регион 17",
+    "kingdomId": "mazonian-empire",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg18",
+    "name": "Регион 18",
+    "kingdomId": "mazonian-empire",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg19",
+    "name": "Регион 19",
+    "kingdomId": "mazonian-empire",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg20",
+    "name": "Регион 20",
+    "kingdomId": "mazonian-empire",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg21",
+    "name": "Регион 21",
+    "kingdomId": "northern-horde",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg22",
+    "name": "Регион 22",
+    "kingdomId": "northern-horde",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg23",
+    "name": "Регион 23",
+    "kingdomId": "northern-horde",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg24",
+    "name": "Регион 24",
+    "kingdomId": "dominion-of-eatein",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg25",
+    "name": "Регион 25",
+    "kingdomId": "dominion-of-eatein",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg26",
+    "name": "Регион 26",
+    "kingdomId": "dominion-of-eatein",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg27",
+    "name": "Регион 27",
+    "kingdomId": "dominion-of-eatein",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg28",
+    "name": "Регион 28",
+    "kingdomId": "marginal-forest",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg29",
+    "name": "Регион 29",
+    "kingdomId": "marginal-forest",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg30",
+    "name": "Регион 30",
+    "kingdomId": "khukbadus-clans",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg31",
+    "name": "Регион 31",
+    "kingdomId": "khukbadus-clans",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg32",
+    "name": "Регион 32",
+    "kingdomId": "khukbadus-clans",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg33",
+    "name": "Регион 33",
+    "kingdomId": "khukbadus-clans",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg34",
+    "name": "Регион 34",
+    "kingdomId": "khukbadus-clans",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg35",
+    "name": "Регион 35",
+    "kingdomId": "khukbadus-clans",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg36",
+    "name": "Регион 36",
+    "kingdomId": "dragon-empire",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg37",
+    "name": "Регион 37",
+    "kingdomId": "dragon-empire",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg38",
+    "name": "Регион 39",
+    "kingdomId": "сhun-chidai",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg39",
+    "name": "Регион 39",
+    "kingdomId": "сhun-chidai",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg40",
+    "name": "Регион 40",
+    "kingdomId": "сhun-chidai",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg41",
+    "name": "Регион 41",
+    "kingdomId": "сhun-chidai",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg42",
+    "name": "Регион 42",
+    "kingdomId": "сhun-chidai",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg43",
+    "name": "Регион 43",
+    "kingdomId": "сhun-chidai",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg44",
+    "name": "Регион 44",
+    "kingdomId": "сhun-chidai",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg45",
+    "name": "Регион 45",
+    "kingdomId": "сhun-chidai",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg46",
+    "name": "Регион 46",
+    "kingdomId": "сhun-chidai",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg47",
+    "name": "Регион 47",
+    "kingdomId": "сhun-chidai",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg48",
+    "name": "Регион 48",
+    "kingdomId": "сhun-chidai",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg49",
+    "name": "Регион 19",
+    "kingdomId": "endless-jianghu",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg50",
+    "name": "Регион 20",
+    "kingdomId": "endless-jianghu",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg51",
+    "name": "Регион 20",
+    "kingdomId": "endless-jianghu",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg52",
+    "name": "Регион 20",
+    "kingdomId": "endless-jianghu",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg53",
+    "name": "Регион 20",
+    "kingdomId": "shaelin",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg54",
+    "name": "Регион 20",
+    "kingdomId": "shaelin",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg55",
+    "name": "Регион 20",
+    "kingdomId": "shaelin",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg56",
+    "name": "Регион 48",
+    "kingdomId": "earth-mortis",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg57",
+    "name": "Регион 19",
+    "kingdomId": "earth-mortis",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg58",
+    "name": "Регион 20",
+    "kingdomId": "earth-mortis",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg59",
+    "name": "Регион 20",
+    "kingdomId": "earth-mortis",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg60",
+    "name": "Регион 20",
+    "kingdomId": "earth-mortis",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg61",
+    "name": "Регион 20",
+    "kingdomId": "earth-mortis",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg62",
+    "name": "Регион 20",
+    "kingdomId": "earth-mortis",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg63",
+    "name": "Регион 20",
+    "kingdomId": "deya",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg64",
+    "name": "Регион 37",
+    "kingdomId": "kingdom-of-agatha",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg65",
+    "name": "Регион 39",
+    "kingdomId": "kingdom-of-agatha",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg66",
+    "name": "Регион 39",
+    "kingdomId": "kingdom-of-agatha",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg67",
+    "name": "Регион 40",
+    "kingdomId": "kingdom-of-agatha",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg68",
+    "name": "Регион 41",
+    "kingdomId": "southern-horde",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg69",
+    "name": "Регион 42",
+    "kingdomId": "southern-horde",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg70",
+    "name": "Регион 43",
+    "kingdomId": "southern-horde",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg71",
+    "name": "Регион 44",
+    "kingdomId": "southern-horde",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg72",
+    "name": "Регион 45",
+    "kingdomId": "southern-horde",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg73",
+    "name": "Регион 46",
+    "kingdomId": "southern-horde",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg74",
+    "name": "Регион 47",
+    "kingdomId": "southern-horde",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg75",
+    "name": "Регион 48",
+    "kingdomId": "southern-horde",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg76",
+    "name": "Регион 19",
+    "kingdomId": "southern-horde",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg77",
+    "name": "Регион 20",
+    "kingdomId": "southern-horde",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg78",
+    "name": "Регион 20",
+    "kingdomId": "kingdom-of-agatha",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg79",
+    "name": "Регион 20",
+    "kingdomId": "kingdom-of-agatha",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg80",
+    "name": "Регион 20",
+    "kingdomId": "kingdom-of-agatha",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg81",
+    "name": "Регион 20",
+    "kingdomId": "kingdom-of-agatha",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg82",
+    "name": "Регион 20",
+    "kingdomId": "kingdom-of-agatha",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg83",
+    "name": "Регион 48",
+    "kingdomId": "kingdom-of-agatha",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg84",
+    "name": "Регион 19",
+    "kingdomId": "kingdom-of-agatha",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg85",
+    "name": "Регион 20",
+    "kingdomId": "kingdom-of-agatha",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg86",
+    "name": "Регион 20",
+    "kingdomId": "earth-mortis",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg87",
+    "name": "Регион 20",
+    "kingdomId": "earth-mortis",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg88",
+    "name": "Регион 20",
+    "kingdomId": "earth-mortis",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg89",
+    "name": "Регион 20",
+    "kingdomId": "earth-mortis",
+    "capital": false,
+    "description": "",
+    "visibility": "player"
+  },
+  {
+    "id": "reg90",
+    "name": "Регион 20",
+    "kingdomId": "shaelin",
+    "capital": false,
+    "description": "",
     "visibility": "player"
   }
 ]

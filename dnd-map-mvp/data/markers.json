@@ -1,20 +1,12 @@
 [
   {
     "id": "marker-ruins",
-    "type": "ruins",
-    "title": "Древние руины",
-    "text": "Здесь находится вход в катакомбы.",
+    "type": "ruin",
+    "name": "Древние руины",
+    "description": "Здесь находится вход в катакомбы.",
     "x": 474,
     "y": 310,
-    "visibility": "player"
-  },
-  {
-    "id": "marker-cult",
-    "type": "secret",
-    "title": "Следы культа",
-    "text": "Следы ритуалов на границе Запретной котловины.",
-    "x": 1182,
-    "y": 389,
-    "visibility": "master"
+    "visibility": "player",
+    "scale": 1
   }
 ]

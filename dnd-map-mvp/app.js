@@ -1,15 +1,19 @@
 const SVG_PATH = "./assets/world-map.svg";
 const SVG_NS = "http://www.w3.org/2000/svg";
+const MARKER_ICON_SPRITE = "./assets/icons/marker-icons.svg";
 
 const state = {
   svgRoot: null,
+  mode: "master",
   selectedRegionId: null,
   selectedSettlementId: null,
+  selectedMarkerId: null,
   hoveredRegionId: null,
   regions: [],
   tool: null,
   interaction: {
-    settlementPointerDown: null,
+    activePointerDown: null,
+    dragEntityType: null,
     isDraggingSettlement: false,
     draggedSettlementId: null,
     pointerId: null,
@@ -23,6 +27,7 @@ const state = {
     kingdoms: [],
     provinces: [],
     settlements: [],
+    markers: [],
   },
   zoom: {
     baseViewBox: null,
@@ -40,6 +45,9 @@ const state = {
     startMinY: 0,
     moved: false,
   },
+  visibility: {
+    markers: true,
+  },
 };
 
 const MAP_UNIT_LABEL = "км";
@@ -47,6 +55,7 @@ const MAP_UNITS_TO_WORLD = 800 / 202; // ≈ 3.9604
 
 const refs = {
   mapContainer: document.getElementById("map-container"),
+  modeSelect: document.getElementById("mode-select"),
   selectionPanel: document.getElementById("selection-panel"),
   zoomInButton: document.getElementById("zoom-in-button"),
   zoomOutButton: document.getElementById("zoom-out-button"),
@@ -54,8 +63,10 @@ const refs = {
   zoomValue: document.getElementById("zoom-value"),
   toolbarHint: document.getElementById("toolbar-hint"),
   addSettlementButton: document.getElementById("add-settlement-button"),
+  addMarkerButton: document.getElementById("add-marker-button"),
   exportSettlementsButton: document.getElementById("export-settlements-button"),
   measureToolButton: document.getElementById("measure-tool-button"),
+  toggleMarkers: document.getElementById("toggle-markers"),
 };
 
 const STATE_LABEL_OVERRIDES = {
@@ -72,6 +83,53 @@ const STATE_LABEL_OVERRIDES = {
     scale: 0.65,
   },
 };
+
+const MARKER_TYPES = {
+  note: {
+    label: "Заметка",
+    iconType: "external-symbol",
+    icon: `${MARKER_ICON_SPRITE}#marker-note`,
+    width: 18,
+    height: 18,
+    anchorX: 9,
+    anchorY: 9,
+  },
+  ruin: {
+    label: "Руины",
+    iconType: "external-symbol",
+    icon: `${MARKER_ICON_SPRITE}#marker-ruin`,
+    width: 18,
+    height: 18,
+    anchorX: 9,
+    anchorY: 9,
+  },
+  quest: {
+    label: "Квест",
+    iconType: "external-symbol",
+    icon: `${MARKER_ICON_SPRITE}#marker-quest`,
+    width: 18,
+    height: 18,
+    anchorX: 9,
+    anchorY: 9,
+  },
+  battle: {
+    label: "Битва",
+    iconType: "external-symbol",
+    icon: `${MARKER_ICON_SPRITE}#marker-battle`,
+    width: 18,
+    height: 18,
+    anchorX: 9,
+    anchorY: 9,
+  },
+};
+
+function getMarkerTypeConfig(type) {
+  return MARKER_TYPES[type] ?? MARKER_TYPES.note;
+}
+
+function isPlayerMode() {
+  return state.mode === "player";
+}
 
 function setHint(text) {
   if (refs.toolbarHint) refs.toolbarHint.textContent = text;
@@ -170,6 +228,9 @@ function getSettlementById(id) {
 
 function getProvinceElement(id) {
   return state.svgRoot.getElementById(id) || state.svgRoot.querySelector(`#${id}`);
+}
+function getMarkerById(id) {
+  return state.data.markers.find((item) => item.id === id) ?? null;
 }
 
 function getProvinceIdByCoordinates(x, y) {
@@ -434,6 +495,9 @@ function renderSettlements() {
   const layer = ensureOverlayLayer("settlements-overlay");
 
   state.data.settlements.forEach((settlement) => {
+    if (isPlayerMode() && settlement.visibility === "master") {
+      return;
+    }
     const isSelected = state.selectedSettlementId === settlement.id;
 
     const group = document.createElementNS(SVG_NS, "g");
@@ -484,7 +548,128 @@ function renderSettlements() {
     }
 
     group.addEventListener("pointerdown", (event) => {
-      beginSettlementPointerDown(settlement.id, event);
+      beginEntityPointerDown("settlement", settlement.id, event);
+      group.addEventListener("click", (event) => {
+      event.stopPropagation();
+
+      if (state.interaction.movedDuringDrag || state.pan.moved) return;
+      if (state.tool === "add-settlement" || state.tool === "add-marker" || state.tool === "measure") {
+        return;
+      }
+
+      selectSettlement(settlement.id);
+  });
+  });
+
+    layer.appendChild(group);
+  });
+}
+function shouldShowMarkerLabel() {
+  return state.zoom.current >= 2.2;
+}
+
+function createMarkerIcon(marker, isSelected = false) {
+  const config = getMarkerTypeConfig(marker.type);
+  const scale = Number(marker.scale ?? 1);
+
+  const width = config.width * scale;
+  const height = config.height * scale;
+  const anchorX = config.anchorX * scale;
+  const anchorY = config.anchorY * scale;
+
+  const group = document.createElementNS(SVG_NS, "g");
+  group.setAttribute("transform", `translate(${marker.x} ${marker.y})`);
+
+  if (config.iconType === "external-symbol") {
+    const use = document.createElementNS(SVG_NS, "use");
+    use.setAttribute("href", config.icon);
+    use.setAttribute("x", String(-anchorX));
+    use.setAttribute("y", String(-anchorY));
+    use.setAttribute("width", String(width));
+    use.setAttribute("height", String(height));
+    group.appendChild(use);
+  } else if (config.iconType === "image") {
+    const image = document.createElementNS(SVG_NS, "image");
+    image.setAttribute("href", config.icon);
+    image.setAttribute("x", String(-anchorX));
+    image.setAttribute("y", String(-anchorY));
+    image.setAttribute("width", String(width));
+    image.setAttribute("height", String(height));
+    group.appendChild(image);
+  }
+
+  if (isSelected) {
+    const ring = document.createElementNS(SVG_NS, "circle");
+    ring.setAttribute("cx", "0");
+    ring.setAttribute("cy", "0");
+    ring.setAttribute("r", String(Math.max(width, height) * 0.55));
+    ring.setAttribute("fill", "none");
+    ring.setAttribute("stroke", "#fff3d2");
+    ring.setAttribute("stroke-width", "2");
+    ring.setAttribute("vector-effect", "non-scaling-stroke");
+    group.insertBefore(ring, group.firstChild);
+  }
+
+  return group;
+}
+
+function renderMarkers() {
+  const layer = ensureOverlayLayer("markers-overlay");
+
+  if (!state.visibility.markers) {
+    if (state.selectedMarkerId) {
+      state.selectedMarkerId = null;
+      renderSelectionPanel();
+    }
+    return;
+  }
+
+  state.data.markers.forEach((marker) => {
+    if (isPlayerMode() && marker.visibility === "master") {
+      return;
+    }
+    const isSelected = state.selectedMarkerId === marker.id;
+
+    const group = document.createElementNS(SVG_NS, "g");
+    group.dataset.entityType = "marker";
+    group.dataset.entityId = marker.id;
+    group.style.cursor =
+      state.tool === "add-marker" || state.tool === "add-settlement" || state.tool === "measure"
+        ? "default"
+        : "pointer";
+
+    const icon = createMarkerIcon(marker, isSelected);
+    group.appendChild(icon);
+
+    if (shouldShowMarkerLabel()) {
+      const scale = Number(marker.scale ?? 1);
+      const labelOffset = 12 * scale;
+      const labelFontSize = Math.max(3, 3 * Math.sqrt(scale));
+
+      const label = document.createElementNS(SVG_NS, "text");
+      label.setAttribute("x", String(marker.x));
+      label.setAttribute("y", String(marker.y - labelOffset));
+      label.setAttribute("font-size", String(labelFontSize));
+      label.setAttribute("text-anchor", "middle");
+      label.setAttribute("dominant-baseline", "middle");
+      label.setAttribute("fill", "#f3f1ea");
+      label.setAttribute("paint-order", "stroke");
+      label.setAttribute("stroke", "rgba(0,0,0,0.65)");
+      label.setAttribute("stroke-width", "2");
+      label.style.userSelect = "none";
+      label.style.pointerEvents = "none";
+      label.textContent = marker.name;
+      group.appendChild(label);
+    }
+    group.addEventListener("pointerdown", (event) => {
+      beginEntityPointerDown("marker", marker.id, event);
+    });
+    group.addEventListener("click", (event) => {
+      event.stopPropagation();
+      if (state.tool === "add-marker" || state.tool === "add-settlement" || state.tool === "measure") {
+        return;
+      }
+      selectMarker(marker.id);
     });
 
     layer.appendChild(group);
@@ -593,6 +778,111 @@ function renderMeasurement() {
 function renderSelectionPanel() {
   if (!refs.selectionPanel) return;
 
+  if (state.selectedMarkerId) {
+    const marker = getMarkerById(state.selectedMarkerId);
+
+    if (!marker) {
+      refs.selectionPanel.innerHTML = "<p>Метка не найдена.</p>";
+      return;
+    }
+
+    const typeConfig = getMarkerTypeConfig(marker.type);
+
+    if (isPlayerMode()) {
+  refs.selectionPanel.innerHTML = `
+    <h3 class="selection-title">${escapeHtml(settlement.name)}</h3>
+    <div class="badges">
+      <span class="badge">Поселение</span>
+      <span class="badge">${escapeHtml(settlement.type)}</span>
+    </div>
+    <p><strong>Описание:</strong> ${escapeHtml(settlement.description ?? province?.description ?? "—")}</p>
+  `;
+  return;
+}
+
+    refs.selectionPanel.innerHTML = `
+      <h3 class="selection-title">${escapeHtml(marker.name)}</h3>
+      <div class="badges">
+        <span class="badge">Метка</span>
+        <span class="badge">${escapeHtml(typeConfig.label)}</span>
+      </div>
+
+      <div class="stack compact-form">
+        <label>Название
+          <input id="marker-name-input" type="text" value="${escapeHtml(marker.name)}" />
+        </label>
+
+        <label>Тип
+          <select id="marker-type-select">
+            ${Object.entries(MARKER_TYPES)
+              .map(
+                ([key, cfg]) =>
+                  `<option value="${key}" ${marker.type === key ? "selected" : ""}>${escapeHtml(cfg.label)}</option>`
+              )
+              .join("")}
+          </select>
+        </label>
+
+        <label>Видимость
+          <select id="marker-visibility-select">
+            <option value="player" ${marker.visibility === "player" ? "selected" : ""}>Видно игрокам</option>
+            <option value="master" ${marker.visibility === "master" ? "selected" : ""}>Только мастеру</option>
+          </select>
+        </label>
+
+        <label>X
+          <input id="marker-x-input" type="number" value="${marker.x}" />
+        </label>
+
+        <label>Y
+          <input id="marker-y-input" type="number" value="${marker.y}" />
+        </label>
+
+        <label>Размер
+        <input
+          id="marker-scale-input"
+          type="range"
+          min="0.4"
+          max="2.5"
+          step="0.1"
+          value="${marker.scale ?? 1}"
+        />
+        <span id="marker-scale-value">${Number(marker.scale ?? 1).toFixed(1)}</span>
+        </label>
+
+        <label>Описание
+          <textarea id="marker-description-input" rows="4">${escapeHtml(marker.description ?? "")}</textarea>
+        </label>
+      </div>
+
+      <div class="selection-actions">
+        <button id="save-marker-button" type="button">Сохранить</button>
+        <button id="delete-marker-button" class="danger-button" type="button">Удалить</button>
+      </div>
+    `;
+    document.getElementById("marker-scale-input")?.addEventListener("input", (event) => {
+       const nextScale = Number(event.target.value || 1);
+       const label = document.getElementById("marker-scale-value");
+
+       if (label) {
+         label.textContent = nextScale.toFixed(1);
+      }
+
+      marker.scale = nextScale;
+      renderMarkers();
+    });
+    document
+      .getElementById("save-marker-button")
+      ?.addEventListener("click", () => saveMarkerChanges(marker.id));
+
+    document
+      .getElementById("delete-marker-button")
+      ?.addEventListener("click", () => deleteMarker(marker.id));
+
+
+    return;
+  }
+
   if (state.selectedSettlementId) {
     const settlement = getSettlementById(state.selectedSettlementId);
     const province = settlement ? getProvinceById(settlement.provinceId) : null;
@@ -602,6 +892,19 @@ function renderSelectionPanel() {
       refs.selectionPanel.innerHTML = "<p>Поселение не найдено.</p>";
       return;
     }
+
+    if (isPlayerMode()) {
+  refs.selectionPanel.innerHTML = `
+    <h3 class="selection-title">${escapeHtml(settlement.name)}</h3>
+    <div class="badges">
+      <span class="badge">Поселение</span>
+      <span class="badge">${escapeHtml(settlement.type)}</span>
+    </div>
+    <p><strong>Государство:</strong> ${kingdom?.name ?? "—"}</p>
+    <p><strong>Император:</strong> ${kingdom?.ruler ?? "—"}</p>
+  `;
+  return;
+}
 
     refs.selectionPanel.innerHTML = `
       <h3 class="selection-title">${settlement.name}</h3>
@@ -629,7 +932,7 @@ function renderSelectionPanel() {
             ${state.data.provinces
               .map(
                 (item) =>
-                  `<option value="${item.id}" ${item.id === settlement.provinceId ? "selected" : ""}>${escapeHtml(item.name)}</option>`,
+                  `<option value="${item.id}" ${item.id === settlement.provinceId ? "selected" : ""}>${escapeHtml(item.name)}</option>`
               )
               .join("")}
           </select>
@@ -674,7 +977,7 @@ function renderSelectionPanel() {
   if (!state.selectedRegionId) {
     refs.selectionPanel.innerHTML = `
       <p>Ничего не выбрано.</p>
-      <p class="small">Кликни по региону или поселению.</p>
+      <p class="small">Кликни по региону, поселению или метке.</p>
     `;
     return;
   }
@@ -702,6 +1005,7 @@ function renderSelectionPanel() {
 }
 
 function saveSettlementChanges(settlementId) {
+  if (isPlayerMode()) return;
   const settlement = getSettlementById(settlementId);
   if (!settlement) return;
 
@@ -724,6 +1028,7 @@ function saveSettlementChanges(settlementId) {
 }
 
 function deleteSettlement(settlementId) {
+  if (isPlayerMode()) return;
   const settlement = getSettlementById(settlementId);
   if (!settlement) return;
 
@@ -735,14 +1040,60 @@ function deleteSettlement(settlementId) {
   renderAll();
 }
 
+function saveMarkerChanges(markerId) {
+  if (isPlayerMode()) return;
+  const marker = getMarkerById(markerId);
+  if (!marker) return;
+
+  const nextScale = Number(document.getElementById("marker-scale-input")?.value);
+  if (!Number.isNaN(nextScale)) {
+    marker.scale = nextScale;
+  }
+
+  marker.name = document.getElementById("marker-name-input")?.value.trim() || marker.name;
+  marker.type = document.getElementById("marker-type-select")?.value || marker.type;
+  marker.visibility =
+    document.getElementById("marker-visibility-select")?.value || marker.visibility;
+  marker.description = document.getElementById("marker-description-input")?.value ?? "";
+
+  const nextX = Number(document.getElementById("marker-x-input")?.value);
+  const nextY = Number(document.getElementById("marker-y-input")?.value);
+
+  if (!Number.isNaN(nextX)) marker.x = Math.round(nextX);
+  if (!Number.isNaN(nextY)) marker.y = Math.round(nextY);
+
+  renderAll();
+}
+
+function deleteMarker(markerId) {
+  if (isPlayerMode()) return;
+  const marker = getMarkerById(markerId);
+  if (!marker) return;
+
+  const shouldDelete = window.confirm(`Удалить метку "${marker.name}"?`);
+  if (!shouldDelete) return;
+
+  state.data.markers = state.data.markers.filter((item) => item.id !== markerId);
+  state.selectedMarkerId = null;
+  renderAll();
+}
+
 function selectRegion(regionId) {
   state.selectedRegionId = regionId;
   state.selectedSettlementId = null;
+  state.selectedMarkerId = null;
   renderAll();
 }
 
 function selectSettlement(settlementId) {
   state.selectedSettlementId = settlementId;
+  state.selectedRegionId = null;
+  state.selectedMarkerId = null;
+  renderAll();
+}
+function selectMarker(markerId) {
+  state.selectedMarkerId = markerId;
+  state.selectedSettlementId = null;
   state.selectedRegionId = null;
   renderAll();
 }
@@ -750,10 +1101,23 @@ function selectSettlement(settlementId) {
 function clearSelection() {
   state.selectedRegionId = null;
   state.selectedSettlementId = null;
+  state.selectedMarkerId = null;
   renderAll();
+}
+function resetEntityInteraction() {
+  state.interaction.activePointerDown = null;
+  state.interaction.isDraggingEntity = false;
+  state.interaction.dragEntityType = null;
+  state.interaction.draggedEntityId = null;
+  state.interaction.pointerId = null;
+
+  requestAnimationFrame(() => {
+    state.interaction.movedDuringDrag = false;
+  });
 }
 
 function createSettlementAt(x, y) {
+  if (isPlayerMode()) return;
   const provinceId = getProvinceIdByCoordinates(x, y);
   const nextIndex = state.data.settlements.length + 1;
 
@@ -772,19 +1136,47 @@ function createSettlementAt(x, y) {
   state.selectedRegionId = null;
   state.tool = null;
 
-  resetSettlementInteraction();
+  resetEntityInteraction();
+  renderAll();
+}
+function createMarkerAt(x, y) {
+  if (isPlayerMode()) return;
+  const nextIndex = state.data.markers.length + 1;
+
+  const marker = {
+    id: `marker${nextIndex}`,
+    name: `Новая метка ${nextIndex}`,
+    type: "note",
+    x: Math.round(x),
+    y: Math.round(y),
+    visibility: "player",
+    description: "",
+    scale: 1,
+  };
+
+  state.data.markers.push(marker);
+  state.selectedMarkerId = marker.id;
+  state.selectedSettlementId = null;
+  state.selectedRegionId = null;
+  state.tool = null;
+
   renderAll();
 }
 
-function beginSettlementPointerDown(settlementId, event) {
-  if (state.tool === "add-settlement" || state.tool === "measure") return;
+function beginEntityPointerDown(entityType, entityId, event) {
+  if (isPlayerMode()) return;
+  if (state.tool === "add-settlement" || state.tool === "add-marker" || state.tool === "measure") {
+    return;
+  }
 
-  state.interaction.settlementPointerDown = {
-    settlementId,
+  state.interaction.activePointerDown = {
+    entityType,
+    entityId,
     pointerId: event.pointerId ?? null,
     startClientX: event.clientX,
     startClientY: event.clientY,
   };
+
   state.interaction.pointerId = event.pointerId ?? null;
   state.interaction.movedDuringDrag = false;
 
@@ -796,10 +1188,12 @@ function beginSettlementPointerDown(settlementId, event) {
   event.stopPropagation();
 }
 
-function maybeStartSettlementDrag(event) {
-  const down = state.interaction.settlementPointerDown;
+function maybeStartEntityDrag(event) {
+  const down = state.interaction.activePointerDown;
   if (!down) return false;
-  if (state.tool === "add-settlement" || state.tool === "measure") return false;
+  if (state.tool === "add-settlement" || state.tool === "add-marker" || state.tool === "measure") {
+    return false;
+  }
   if (down.pointerId !== null && event.pointerId !== down.pointerId) return false;
 
   const dx = event.clientX - down.startClientX;
@@ -808,66 +1202,83 @@ function maybeStartSettlementDrag(event) {
 
   if (distance < 4) return false;
 
-  state.interaction.isDraggingSettlement = true;
-  state.interaction.draggedSettlementId = down.settlementId;
+  state.interaction.isDraggingEntity = true;
+  state.interaction.dragEntityType = down.entityType;
+  state.interaction.draggedEntityId = down.entityId;
   state.interaction.movedDuringDrag = true;
+
   return true;
 }
 
-function handleSettlementDrag(event) {
-  if (!state.interaction.isDraggingSettlement) {
-    maybeStartSettlementDrag(event);
+function handleEntityDrag(event) {
+  if (!state.interaction.isDraggingEntity) {
+    maybeStartEntityDrag(event);
   }
 
-  if (!state.interaction.isDraggingSettlement) return;
-  if (state.tool === "add-settlement" || state.tool === "measure") return;
+  if (!state.interaction.isDraggingEntity) return;
+  if (state.tool === "add-settlement" || state.tool === "add-marker" || state.tool === "measure") {
+    return;
+  }
   if (state.interaction.pointerId !== null && event.pointerId !== state.interaction.pointerId) {
     return;
   }
 
-  const settlement = getSettlementById(state.interaction.draggedSettlementId);
-  if (!settlement) return;
-
   const point = toSvgPoint(event);
-  settlement.x = Math.round(point.x);
-  settlement.y = Math.round(point.y);
+  const x = Math.round(point.x);
+  const y = Math.round(point.y);
 
-  const provinceId = getProvinceIdByCoordinates(settlement.x, settlement.y);
-  if (provinceId) {
-    settlement.provinceId = provinceId;
+  if (state.interaction.dragEntityType === "settlement") {
+    const settlement = getSettlementById(state.interaction.draggedEntityId);
+    if (!settlement) return;
+
+    settlement.x = x;
+    settlement.y = y;
+
+    const provinceId = getProvinceIdByCoordinates(settlement.x, settlement.y);
+    if (provinceId) {
+      settlement.provinceId = provinceId;
+    }
+
+    if (state.selectedSettlementId === settlement.id) {
+      renderAll();
+    } else {
+      renderSettlements();
+    }
+    return;
   }
 
-  if (state.selectedSettlementId === settlement.id) {
-    renderAll();
-  } else {
-    renderSettlements();
+  if (state.interaction.dragEntityType === "marker") {
+    const marker = getMarkerById(state.interaction.draggedEntityId);
+    if (!marker) return;
+
+    marker.x = x;
+    marker.y = y;
+
+    if (state.selectedMarkerId === marker.id) {
+      renderAll();
+    } else {
+      renderMarkers();
+    }
   }
 }
 
 function handleGlobalPointerUp(event) {
-  const down = state.interaction.settlementPointerDown;
+  const down = state.interaction.activePointerDown;
 
   if (
     down &&
-    !state.interaction.isDraggingSettlement &&
+    !state.interaction.isDraggingEntity &&
     (down.pointerId === null || down.pointerId === event.pointerId)
   ) {
-    selectSettlement(down.settlementId);
+    if (down.entityType === "settlement") {
+      selectSettlement(down.entityId);
+    } else if (down.entityType === "marker") {
+      selectMarker(down.entityId);
+    }
   }
 
-  resetSettlementInteraction();
+  resetEntityInteraction();
   endPan(event);
-}
-
-function resetSettlementInteraction() {
-  state.interaction.settlementPointerDown = null;
-  state.interaction.isDraggingSettlement = false;
-  state.interaction.draggedSettlementId = null;
-  state.interaction.pointerId = null;
-
-  requestAnimationFrame(() => {
-    state.interaction.movedDuringDrag = false;
-  });
 }
 
 
@@ -906,6 +1317,12 @@ function bindRegionEvents() {
         return;
       }
 
+      if (state.tool === "add-marker") {
+        const point = toSvgPoint(event);
+        createMarkerAt(point.x, point.y);
+        return;
+      }
+
       if (state.tool === "measure") {
         const point = toSvgPoint(event);
         handleMeasurePoint(point);
@@ -919,7 +1336,10 @@ function bindRegionEvents() {
   refs.mapContainer.addEventListener("click", (event) => {
     if (state.interaction.movedDuringDrag || state.pan.moved) return;
 
-    if ((state.tool === "add-settlement" || state.tool === "measure") && event.target === state.svgRoot) {
+   if (
+    (state.tool === "add-settlement" || state.tool === "add-marker" || state.tool === "measure") &&
+    event.target === state.svgRoot) 
+{
       const point = toSvgPoint(event);
 
       if (state.tool === "add-settlement") {
@@ -1105,8 +1525,8 @@ function bindViewportEvents() {
   );
 
   refs.mapContainer.addEventListener("pointerdown", beginPan);
+  refs.mapContainer.addEventListener("pointermove", handleEntityDrag);
   refs.mapContainer.addEventListener("pointermove", handlePanMove);
-  refs.mapContainer.addEventListener("pointermove", handleSettlementDrag);
 
   window.addEventListener("pointerup", handleGlobalPointerUp);
   window.addEventListener("pointercancel", handleGlobalPointerUp);
@@ -1120,6 +1540,11 @@ function bindViewportEvents() {
     renderAll();
   });
 
+  refs.addMarkerButton?.addEventListener("click", () => {
+    state.tool = state.tool === "add-marker" ? null : "add-marker";
+    renderAll();
+  });
+
   refs.measureToolButton?.addEventListener("click", () => {
     state.tool = state.tool === "measure" ? null : "measure";
     state.measurement.start = null;
@@ -1128,6 +1553,38 @@ function bindViewportEvents() {
   });
 
   refs.exportSettlementsButton?.addEventListener("click", exportSettlements);
+  refs.toggleMarkers?.addEventListener("change", (event) => {
+  state.visibility.markers = Boolean(event.target.checked);
+
+  if (!state.visibility.markers && state.selectedMarkerId) {
+    state.selectedMarkerId = null;
+  }
+
+  renderAll();
+  });
+  refs.modeSelect?.addEventListener("change", (event) => {
+  state.mode = event.target.value === "player" ? "player" : "master";
+
+  if (state.tool === "add-settlement" || state.tool === "add-marker") {
+    state.tool = null;
+  }
+
+  if (state.selectedMarkerId) {
+    const marker = getMarkerById(state.selectedMarkerId);
+    if (marker && marker.visibility === "master" && isPlayerMode()) {
+      state.selectedMarkerId = null;
+    }
+  }
+
+  if (state.selectedSettlementId) {
+    const settlement = getSettlementById(state.selectedSettlementId);
+    if (settlement && settlement.visibility === "master" && isPlayerMode()) {
+      state.selectedSettlementId = null;
+    }
+  }
+
+  renderAll();
+});
 }
 
 function exportSettlements() {
@@ -1144,20 +1601,32 @@ function exportSettlements() {
 function renderAll() {
   applyRegionStyles();
   renderSettlements();
+  renderMarkers();
   renderStateLabels();
   renderMeasurement();
   renderSelectionPanel();
 
   if (state.tool === "add-settlement") {
-    setHint("Режим добавления поселения: кликни по карте.");
-  } else if (state.tool === "measure") {
-    setHint("Линейка: выбери две точки на карте.");
-  } else {
-    setHint("Можно выбирать, редактировать и перетаскивать поселения.");
-  }
+  setHint("Режим добавления поселения: кликни по карте.");
+} else if (state.tool === "add-marker") {
+  setHint("Режим добавления метки: кликни по карте.");
+} else if (state.tool === "measure") {
+  setHint("Линейка: выбери две точки на карте.");
+} else if (isPlayerMode()) {
+  setHint("Режим игрока: просмотр карты без редактирования.");
+} else {
+  setHint("Можно выбирать регионы, поселения и метки.");
+}
 
   refs.addSettlementButton?.classList.toggle("active-tool", state.tool === "add-settlement");
+  refs.addMarkerButton?.classList.toggle("active-tool", state.tool === "add-marker");
   refs.measureToolButton?.classList.toggle("active-tool", state.tool === "measure");
+  const editingLocked = isPlayerMode();
+
+  refs.addSettlementButton?.toggleAttribute("disabled", editingLocked);
+  refs.addMarkerButton?.toggleAttribute("disabled", editingLocked);
+  refs.exportSettlementsButton?.toggleAttribute("disabled", editingLocked);
+
 }
 
 function escapeHtml(value) {
@@ -1174,20 +1643,28 @@ async function init() {
       throw new Error("Не найден элемент #map-container");
     }
 
-    const [kingdoms, provinces, settlements] = await Promise.all([
+    const [kingdoms, provinces, settlements, markers] = await Promise.all([
       loadJson("./data/kingdoms.json"),
       loadJson("./data/provinces.json"),
       loadJson("./data/settlements.json"),
+      loadJson("./data/markers.json"),
     ]);
 
     state.data.kingdoms = kingdoms;
     state.data.provinces = provinces;
     state.data.settlements = settlements;
+    state.data.markers = markers;
 
     await loadSvg();
     buildRegions();
     bindRegionEvents();
     bindViewportEvents();
+    if (refs.toggleMarkers) {
+      refs.toggleMarkers.checked = state.visibility.markers;
+    }
+    if (refs.modeSelect) {
+      refs.modeSelect.value = state.mode;
+    }
     renderAll();
   } catch (error) {
     console.error(error);

@@ -530,7 +530,7 @@
   {
     "id": "reg67",
     "name": "Регион 40",
-    "kingdomId": "kingdom-of-agatha",
+    "kingdomId": "southern-horde",
     "capital": false,
     "description": "",
     "visibility": "player"

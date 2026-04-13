@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <symbol id="marker-note" viewBox="-10 -10 20 20">
+      <circle cx="0" cy="0" r="6" fill="#f3e7b3" stroke="#2b2b2b" stroke-width="2" />
+    </symbol>
+
+    <symbol id="marker-ruin" viewBox="-10 -10 20 20">
+      <path d="M0,-7 L7,0 L0,7 L-7,0 Z" fill="#c9b8a1" stroke="#2b2b2b" stroke-width="2" />
+    </symbol>
+
+    <symbol id="marker-quest" viewBox="-10 -10 20 20">
+      <path
+        d="M0,-8 L2.3,-2.5 L8,-2.5 L3.5,1 L5.2,7 L0,3.8 L-5.2,7 L-3.5,1 L-8,-2.5 L-2.3,-2.5 Z"
+        fill="#d9c36a"
+        stroke="#2b2b2b"
+        stroke-width="1.5"
+      />
+    </symbol>
+
+    <symbol id="marker-battle" viewBox="-10 -10 20 20">
+      <path d="M-6,-6 L6,6 M6,-6 L-6,6" stroke="#7a1f1f" stroke-width="2.5" stroke-linecap="round" />
+    </symbol>
+  </defs>
+</svg>

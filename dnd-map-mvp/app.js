@@ -548,17 +548,19 @@ function renderSettlements() {
     }
 
     group.addEventListener("pointerdown", (event) => {
-      beginEntityPointerDown("settlement", settlement.id, event);
-      group.addEventListener("click", (event) => {
-      event.stopPropagation();
+  beginEntityPointerDown("settlement", settlement.id, event);
+});
 
-      if (state.interaction.movedDuringDrag || state.pan.moved) return;
-      if (state.tool === "add-settlement" || state.tool === "add-marker" || state.tool === "measure") {
-        return;
-      }
+    group.addEventListener("click", (event) => {
+    event.stopPropagation();
 
-      selectSettlement(settlement.id);
-  });
+  if (state.interaction.movedDuringDrag || state.pan.moved) return;
+  if (state.tool === "add-settlement" || state.tool === "add-marker" || state.tool === "measure") {
+    return;
+  }
+
+  selectSettlement(settlement.id);
+
   });
 
     layer.appendChild(group);
@@ -900,8 +902,7 @@ function renderSelectionPanel() {
       <span class="badge">Поселение</span>
       <span class="badge">${escapeHtml(settlement.type)}</span>
     </div>
-    <p><strong>Государство:</strong> ${kingdom?.name ?? "—"}</p>
-    <p><strong>Император:</strong> ${kingdom?.ruler ?? "—"}</p>
+    <p><strong>Описание:</strong> ${escapeHtml(settlement.description ?? province?.description ?? "—")}</p>
   `;
   return;
 }
